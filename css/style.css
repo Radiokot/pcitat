@@ -73,6 +73,9 @@ body {
 	font-size: 12pt;
 	padding: .25em .5em .25em .5em;
 }
+blockquote .btn {
+	padding: 0px;
+}
 #quotesGrid blockquote {
 	margin: 0 10px 40px 10px;
 }

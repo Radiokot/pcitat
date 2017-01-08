@@ -95,11 +95,9 @@
 							<small><a href="./quotes?book=<?=$quote['bookId']?>"><?=$quote["bookTitle"]?></a></small>
 						<?php endif; ?>
 						<?php if($activeTab!==1): ?>
-							<div class="btn-group" role="group">
-								<button type="button" class="btn btn-link" data-toggle="modal" data-target="#deleteQuoteModal" data-id="<?=$quote['id']?>">
+								<a class="btn btn-link" data-toggle="modal" data-target="#deleteQuoteModal" data-id="<?=$quote['id']?>">
 									<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-								</button>
-							</div>
+								</a>
 						<?php endif; ?>
 					</blockquote>
 				<?php endforeach; ?>	
