@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru-RU" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<?php include dirname(__FILE__)."/headTags.html"?>
+
+	<title>Вход - Просто цитатник</title>
+</head>
+<body>
+<div class="modal fade" id="signupModal" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Создать аккаунт</h4>
+			</div>
+			<form id="signupForm" method="POST" onsubmit="return LoginPage.trySignup();">
+				<input type="hidden" name="action" value="signup">
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="signupName">Ваше имя</label>
+						<input class="form-control" name="signupName" id="signupName" placeholder="Введите ваше имя" required>
+					</div>
+					<div class="form-group">
+						<label for="signupEmail">Email</label>
+						<input class="form-control" type="email" name="signupEmail" id="signupEmail" placeholder="Введите ваш email" required>
+					</div>
+					<div class="form-group">
+						<label for="signupPassword">Пароль</label>
+						<input class="form-control" type="password" name="signupPassword" autocomplete="off" id="signupPassword" placeholder="Введите ваш пароль" required>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+					<input type="submit" class="btn btn-info" value="Зарегистрироваться">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<div class="container">
+	<div class="row">
+		<div class="col-xs-12">
+			<h1 class="text-center"><img src="icon/icon120.png"><br>Просто цитатник</h1>
+			<br>
+		</div>
+		<div class="col-md-4 col-md-offset-4">
+			<form id="loginForm" method="POST">
+				<input type="hidden" name="action" value="login">
+				<div class="form-group">
+					<label for="email">Email</label>
+					<input type="email" class="form-control" name="email" id="email" placeholder="Email" value="<?=$prevEmail ?>">
+				</div>
+				<div class="form-group">
+					<label for="password">Пароль</label>
+					<input type="password" class="form-control" name="password" id="password" placeholder="Пароль" value="<?=$prevPassword ?>">
+				</div>
+				<button type="submit" id="loginButton" class="btn btn-info col-xs-12">Войти</button>			
+			</form>
+			<br style="clear:both;">
+			<br>
+			<button id="signupButton" data-toggle="modal" data-target="#signupModal" class="btn btn-default col-xs-12">Зарегистрироваться</button>
+			<br style="clear:both;">
+			<br>
+			<?php if ($showStatus): ?>
+				<div class="alert <?=$statusClass ?>" role="alert"><?=$statusText ?></div>
+				<br>
+			<?php endif; ?>
+		</div>
+	</div>
+</div>
+</body>
+</html>

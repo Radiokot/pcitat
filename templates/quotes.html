@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru-RU" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<?php include dirname(__FILE__)."/headTags.html"?>
+
+	<title><?=($activeTab===1)?"Мои цитаты":$book["title"]?></title>
+</head>
+<body>
+	<div class="modal fade" id="addQuoteModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Добавить цитату</h4>
+				</div>
+				<form id="addForm" method="POST">
+					<input type="hidden" name="action" value="add">
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="quoteText">Текст цитаты</label>
+							<textarea class="form-control" name="quoteText" id="quoteText" rows="5" required autocomplete="off" autofocus></textarea> 
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+						<input type="submit" class="btn btn-info" value="Добавить">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="deleteQuoteModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-sm" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Удалить цитату?</h4>
+				</div>
+				<form id="deleteQuoteForm" method="POST">
+					<input type="hidden" name="action" value="delete">
+					<input type="hidden" name="deleteQuoteId">
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+						<input type="submit" class="btn btn-danger" value="Удалить">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="deleteBookModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Удалить книгу?</h4>
+				</div>
+				<form id="deleteQuoteForm" method="POST" action="./books">
+					<input type="hidden" name="action" value="delete">
+					<input type="hidden" name="deleteBookId" value="<?=$book['id']?>">
+					<div class="modal-body">
+						<p>Будет удалена книга и все цитаты из нее.</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+						<input type="submit" class="btn btn-danger" value="Удалить">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+	<?php include dirname(__FILE__)."/navbar.html"?>
+
+	<div class="container container-behind-nav">
+		<div class="page-header">
+			<h1><?=($activeTab===1)?"Мои цитаты":$book['title']?></h1>
+			<?php if($activeTab!==1): ?>
+				<p class="lead"><?=$book['author']?></p>
+				<div class="btn-toolbar">
+					<button class="btn btn-info" data-toggle="modal" data-target="#addQuoteModal"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Добавить цитату</button>
+					<button class="btn btn-danger" data-toggle="modal" data-target="#deleteBookModal"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>&nbsp;Удалить книгу</button>
+				</div>
+			<?php endif; ?>
+		</div>
+		<?php if ($showStatus): ?>
+			<div class="alert <?=$statusClass ?>" role="alert"><?=$statusText ?></div>
+		<?php endif; ?>
+		<?php if(count($quotes) == 0): ?>
+			<p class="lead">Пока что здесь пусто</p>
+		<?php else: ?>
+			<div id="quotesGrid" data-columns>
+				<?php foreach($quotes as $quote): ?>
+					<blockquote>
+						<p><?= nl2br($quote["text"])?></p>
+						<?php if ($activeTab===1): ?>
+							<small><a href="./quotes?book=<?=$quote['bookId']?>"><?=$quote["bookTitle"]?></a></small>
+						<?php endif; ?>
+						<?php if($activeTab!==1): ?>
+							<div class="btn-group" role="group">
+								<button type="button" class="btn btn-link" data-toggle="modal" data-target="#deleteQuoteModal" data-id="<?=$quote['id']?>">
+									<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+								</button>
+							</div>
+						<?php endif; ?>
+					</blockquote>
+				<?php endforeach; ?>	
+			</div>
+		<?php endif; ?>
+	</div>
+
+	<?php include dirname(__FILE__)."/footer.html"?>
+
+	<script src="./js/tools/salvattore.min.js"></script>
+	<script>
+		$(document).ready(function(){
+			$('[data-toggle="tooltip"]').tooltip();   
+			$(".modal").on("shown.bs.modal", function() {
+				$(this).find("[autofocus]").focus();
+			});
+			$("#quoteText").keydown(function (e) {
+				if (e.ctrlKey && e.keyCode == 13) {
+					let form = $("#addForm");
+					if (!form[0].checkValidity()) {
+						form.find(":submit").click();
+					} else {
+						form.submit();
+					}
+				}
+			});
+			$("#deleteQuoteModal").on("show.bs.modal", function (event) {
+				let button = $(event.relatedTarget);
+				let id = button.data("id");
+				let modal = $(this);
+				modal.find("input[name=deleteQuoteId]").val(id);
+			})
+		});
+	</script>
+</body>
+</html>
