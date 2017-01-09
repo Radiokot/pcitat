@@ -67,7 +67,7 @@ class BookManager {
 		$db = DBManager::connect();
 
 		$query = $db->prepare("SELECT books.id, books.title, books.author, books.cover, "
-			."(SELECT COUNT(*) FROM quotes WHERE quotes.user_id = 6 AND quotes.book_id = books.id) AS quotesCount "
+			."(SELECT COUNT(*) FROM quotes WHERE quotes.user_id = 'users-books'.user_id AND quotes.book_id = books.id) AS quotesCount "
 			."FROM 'users-books', books WHERE 'users-books'.user_id = :user_id AND 'users-books'.book_id = books.id "
 			."ORDER BY 'users-books'.id DESC");
 		$query->bindParam(":user_id", $userId);
