@@ -5,6 +5,9 @@ html {
 body {
 	margin-bottom: 80px;
 }
+.btn-toolbar .btn {
+	margin-bottom: 5px;
+}
 .navbar {
 	border-radius: 0px;
 	box-shadow: 0px -2px 10px black;
