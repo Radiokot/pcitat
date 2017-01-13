@@ -49,7 +49,7 @@
 						<a href="./quotes?book=<?=$book['id']?>">
 						<div class="thumbnail">
 							<div class="book-badges">
-								<?php if (intval($user["reading_book_id"]) === $book["id"]): ?>
+								<?php if (intval($user["twitter_book_id"]) === $book["id"]): ?>
 									<span class="label label-info label-as-badge" data-toggle="tooltip" data-placement="bottom" title="Используется для экспорта из Twitter"><img src="icon/twitter-icon.svg"></span></span>
 								<?php endif; ?>
 								<span class="label label-primary label-as-badge" data-toggle="tooltip" data-placement="bottom" title="Количество цитат"><?=$book["quotesCount"]?></span>

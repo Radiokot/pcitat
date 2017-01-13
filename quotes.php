@@ -21,7 +21,7 @@ $statusClass = "";
 $showStatus = false;
 
 $book = BookManager::getById($bookId);
-$isTwitterBook = intval($user["reading_book_id"]) === $book["id"];
+$isTwitterBook = intval($user["twitter_book_id"]) === $book["id"];
 $quotes;
 
 if ($action === "add" && $book !== null) {
@@ -44,11 +44,11 @@ if ($action === "add" && $book !== null) {
 } else if ($action === "switchTwitterExport") {
 	if ($isTwitterBook) {
 		UserManager::setTwitterBook($user["id"], null);
-		$user["reading_book_id"] = null;
+		$user["twitter_book_id"] = null;
 	} else {
 		UserManager::setTwitterBook($user["id"], $book["id"]);
 		$showStatus = true;
-		$user["reading_book_id"] = $book["id"];
+		$user["twitter_book_id"] = $book["id"];
 		$statusText = "Теперь цитаты, отправленные с Kindle через Twitter, будут добавляться к этой книге";
 		$statusClass = "alert-success";
 	}
