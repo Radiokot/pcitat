@@ -57,7 +57,7 @@
 					<input type="hidden" name="action" value="delete">
 					<input type="hidden" name="deleteBookId" value="<?=$book['id']?>">
 					<div class="modal-body">
-						<p>Будет удалена книга и все цитаты из нее.</p>
+						<p>Будет удалена книга «<?=$book['title']?>» и все цитаты из нее.</p>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
@@ -77,13 +77,31 @@
 				<p class="lead"><?=$book['author']?></p>
 				<div class="btn-toolbar">
 					<button class="btn btn-info" data-toggle="modal" data-target="#addQuoteModal"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Добавить цитату</button>
-					<button class="btn btn-danger" data-toggle="modal" data-target="#deleteBookModal"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>&nbsp;Удалить книгу</button>
+					<div class="btn-group">
+						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-option-vertical" aria-hidden="true"></span>
+						</button>
+						<ul class="dropdown-menu pull-right">
+							<li>
+								<form id="switchTwitterExport" method="POST">
+									<input type="hidden" name="action" value="switchTwitterExport">
+								</form>
+								<a href="#" onclick="document.getElementById('switchTwitterExport').submit();">
+								<?php if($isTwitterBook): ?>
+									<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>&nbsp;
+								<?php endif; ?>
+								Экспорт из Twitter</a>
+							</li>
+							<li role="separator" class="divider"></li>
+							<li><a href="#deleteBookModal" data-toggle="modal" data-target="#deleteBookModal">Удалить книгу</a></li>
+						</ul>
+					</div>
 				</div>
 			<?php endif; ?>
+			<?php if ($showStatus): ?>
+				<br>
+				<div class="alert <?=$statusClass ?>" role="alert"><?=$statusText ?></div>
+			<?php endif; ?>
 		</div>
-		<?php if ($showStatus): ?>
-			<div class="alert <?=$statusClass ?>" role="alert"><?=$statusText ?></div>
-		<?php endif; ?>
 		<?php if(count($quotes) == 0): ?>
 			<p class="lead">Пока что здесь пусто</p>
 		<?php else: ?>
@@ -95,9 +113,9 @@
 							<small><a href="./quotes?book=<?=$quote['bookId']?>"><?=$quote["bookTitle"]?></a></small>
 						<?php endif; ?>
 						<?php if($activeTab!==1): ?>
-								<a class="btn btn-link" data-toggle="modal" data-target="#deleteQuoteModal" data-id="<?=$quote['id']?>">
-									<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-								</a>
+							<a class="btn btn-link" data-toggle="modal" data-target="#deleteQuoteModal" data-id="<?=$quote['id']?>">
+								<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+							</a>
 						<?php endif; ?>
 					</blockquote>
 				<?php endforeach; ?>	

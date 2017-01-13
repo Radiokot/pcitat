@@ -1,6 +1,7 @@
 <?php
 
 include_once dirname(__FILE__)."/php/BookManager.php";
+include_once dirname(__FILE__)."/php/UserManager.php";
 include_once dirname(__FILE__)."/php/QuoteManager.php";
 
 setlocale(LC_ALL, "ru_RU.UTF-8");
@@ -19,8 +20,8 @@ $statusText = "";
 $statusClass = "";
 $showStatus = false;
 
-
 $book = BookManager::getById($bookId);
+$isTwitterBook = intval($user["reading_book_id"]) === $book["id"];
 $quotes;
 
 if ($action === "add" && $book !== null) {
@@ -40,6 +41,20 @@ if ($action === "add" && $book !== null) {
 	$id = mysql_escape_string((isset($_REQUEST["deleteQuoteId"])) ? trim($_REQUEST["deleteQuoteId"]) : "");
 	QuoteManager::deleteById($id, $user["id"]);
 	header("Location: ${_SERVER['REQUEST_URI']}");
+} else if ($action === "switchTwitterExport") {
+	if ($isTwitterBook) {
+		UserManager::setTwitterBook($user["id"], null);
+		$user["reading_book_id"] = null;
+	} else {
+		UserManager::setTwitterBook($user["id"], $book["id"]);
+		$showStatus = true;
+		$user["reading_book_id"] = $book["id"];
+		$statusText = "Теперь цитаты, отправленные с Kindle через Twitter, будут добавляться к этой книге";
+		$statusClass = "alert-success";
+	}
+	$isTwitterBook = !$isTwitterBook;
+	$_SESSION["user"] = $user;
+	//header("Location: ${_SERVER['REQUEST_URI']}");
 }
 
 if ($book === null) {

@@ -48,7 +48,12 @@
 					<div class="book">
 						<a href="./quotes?book=<?=$book['id']?>">
 						<div class="thumbnail">
-							<span class="label label-primary label-as-badge" data-toggle="tooltip" data-placement="left" title="Количество цитат"><?=$book["quotesCount"]?></span>
+							<div class="book-badges">
+								<?php if (intval($user["reading_book_id"]) === $book["id"]): ?>
+									<span class="label label-info label-as-badge" data-toggle="tooltip" data-placement="bottom" title="Используется для экспорта из Twitter"><img src="icon/twitter-icon.svg"></span></span>
+								<?php endif; ?>
+								<span class="label label-primary label-as-badge" data-toggle="tooltip" data-placement="bottom" title="Количество цитат"><?=$book["quotesCount"]?></span>
+							</div>
 							<img src="<?=$book['cover']?>" alt="<?=$book['title']?>">
 							<div class="caption">
 								<h4><?=$book["title"]?></h4>
