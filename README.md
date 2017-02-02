@@ -9,7 +9,7 @@
 ```
 #!bash
 cd php
-cp quoter-scratch.sqlite quoter.sqlite 
-chmod 666 quoter.sqlite
+cp quoter-scratch.sqlite .quoter.sqlite 
+chmod 666 .quoter.sqlite
 ```
 * Настроить веб-сервер для игнорирования расширения .php (/login = /login.php)
