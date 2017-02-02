@@ -23,7 +23,7 @@ class BookManager {
 		}
 		$book["title"] = $html->find(".book-big-data:first>h1:first")[0]->text();
 		$book["author"] = $html->find(".author-name:first>a:first")->text();
-		$book["cover"] = $html->find(".book-info:first>div:first>img:first")->attr("src");
+		$book["cover"] = $html->find(".book-image-center>img:first")->attr("src");
 
 		return $book;
 	}
