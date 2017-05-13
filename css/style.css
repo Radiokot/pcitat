@@ -70,6 +70,9 @@ body {
 	position: relative;
 	padding-top: 10px;
 }
+.book .thumbnail img {
+	max-width: 160px;
+}
 .book-badges {
 	position: absolute;
 	top: 10px;
