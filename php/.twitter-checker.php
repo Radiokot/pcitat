@@ -34,12 +34,16 @@ function getQuote($url) {
 		return null;
 	}
 
-	$html = file_get_contents($url);
+	$opts = array('http'=>array('header' => "User-Agent:PCitat/1.0\r\n"));
+	$context = stream_context_create($opts);
+	$html = str_replace(array("\r", "\n"), "", file_get_contents($url, false, $context));
+
 	$matches = array(); 
-	if (!preg_match_all("/\"content\":\"(.+?)\"/", $html, $matches)) {
+	if (!preg_match_all("/<p id=\"kp-quote\".+?>\s+\"(.+?)\"<\/p>/", $html, $matches)) {
 		return null;
 	}
-	$quote = html_entity_decode($matches[1][0]);
+
+	$quote = $matches[1][0];
 	return $quote;
 }
 
@@ -63,7 +67,7 @@ for ($i = count($tweets) - 1; $i >= 0; $i--) {
 
 	$amazonUrl = "";
 	foreach ($urls as $url) {
-		if (preg_match("/http:\/\/amzn.com\/k\/.+/", $url->expanded_url) == 1) {
+		if (preg_match("/http:\/\/a.co\/.+/", $url->expanded_url) == 1) {
 			$amazonUrl = $url->expanded_url;
 			break;
 		}
