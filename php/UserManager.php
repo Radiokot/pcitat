@@ -84,7 +84,7 @@ class UserManager {
 
 		$db = null;
 
-		return UserManager::getUserByEmail($registerData["email"]);
+		return UserManager::getByEmail($registerData["email"]);
 	}
 
 	static function login($loginData) {
