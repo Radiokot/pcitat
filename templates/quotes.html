@@ -62,6 +62,9 @@
 				<form id="deleteQuoteForm" method="POST">
 					<input type="hidden" name="action" value="delete">
 					<input type="hidden" name="deleteQuoteId">
+					<div class="modal-body">
+						<p id="deleteQuoteText"></p>
+					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
 						<input type="submit" class="btn btn-danger" value="Удалить">
@@ -184,6 +187,9 @@
 				let button = $(event.relatedTarget);
 				let id = button.data("id");
 				let modal = $(this);
+				let quoteText = $("#quoteText" + id).text();
+				console.log(quoteText)
+				$("#deleteQuoteText").text(quoteText);
 				modal.find("input[name=deleteQuoteId]").val(id);
 			})
 			$("#updateQuoteModal").on("show.bs.modal", function (event) {
