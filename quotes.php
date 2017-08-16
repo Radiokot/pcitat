@@ -41,6 +41,11 @@ if ($action === "add" && $book !== null) {
 	$id = mysql_escape_string((isset($_REQUEST["deleteQuoteId"])) ? trim($_REQUEST["deleteQuoteId"]) : "");
 	QuoteManager::deleteById($id, $user["id"]);
 	header("Location: ${_SERVER['REQUEST_URI']}");
+} else if ($action === "update") {
+	$id = mysql_escape_string((isset($_REQUEST["updateQuoteId"])) ? trim($_REQUEST["updateQuoteId"]) : "");
+	$text = mysql_escape_string(htmlspecialchars((isset($_REQUEST["quoteText"])) ? trim($_REQUEST["quoteText"]) : ""));
+	QuoteManager::update($id, $user["id"], $text);
+	header("Location: ${_SERVER['REQUEST_URI']}");
 } else if ($action === "switchTwitterExport") {
 	if ($isTwitterBook) {
 		UserManager::setTwitterBook($user["id"], null);

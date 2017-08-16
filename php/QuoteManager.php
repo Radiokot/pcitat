@@ -19,6 +19,20 @@ class QuoteManager {
 		return QuoteManager::getById($id);
 	}
 
+	static function update($id, $userId, $text) {
+		$db = DBManager::connect();
+
+		$query = $db->prepare("UPDATE quotes SET text = :text WHERE id = :id AND user_id = :user_id");
+		$query->bindParam(":id", $id);
+		$query->bindParam(":user_id", $userId);
+		$query->bindParam(":text", $text);
+		$query->execute();
+
+		$db = null;
+
+		return QuoteManager::getById($id);
+	}
+
 	static function deleteById($id, $userId) {
 		$db = DBManager::connect();
 

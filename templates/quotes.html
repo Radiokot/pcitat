@@ -29,6 +29,30 @@
 		</div>
 	</div>
 
+	<div class="modal fade" id="updateQuoteModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Изменить цитату</h4>
+				</div>
+				<form id="updateForm" method="POST">
+					<input type="hidden" name="action" value="update">
+					<input type="hidden" name="updateQuoteId">
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="quoteText">Текст цитаты</label>
+							<textarea class="form-control" name="quoteText" id="uptateQuoteText" rows="5" required autocomplete="off" autofocus></textarea> 
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+						<input type="submit" class="btn btn-info" value="Изменить">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
 	<div class="modal fade" id="deleteQuoteModal" tabindex="-1" role="dialog">
 		<div class="modal-dialog modal-sm" role="document">
 			<div class="modal-content">
@@ -108,13 +132,17 @@
 			<div id="quotesGrid" data-columns>
 				<?php foreach($quotes as $quote): ?>
 					<blockquote>
-						<p><?= nl2br($quote["text"])?></p>
+						<p id="quoteText<?=$quote['id']?>"><?= nl2br($quote["text"])?></p>
 						<?php if ($activeTab===1): ?>
 							<small><a href="./quotes?book=<?=$quote['bookId']?>"><?=$quote["bookTitle"]?></a></small>
 						<?php endif; ?>
 						<?php if($activeTab!==1): ?>
 							<a class="btn btn-link" data-toggle="modal" data-target="#deleteQuoteModal" data-id="<?=$quote['id']?>">
 								<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+							</a>
+							&nbsp;
+							<a class="btn btn-link" data-toggle="modal" data-target="#updateQuoteModal" data-id="<?=$quote['id']?>">
+								<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
 							</a>
 						<?php endif; ?>
 					</blockquote>
@@ -133,8 +161,18 @@
 				$(this).find("[autofocus]").focus();
 			});
 			$("#quoteText").keydown(function (e) {
-				if (e.ctrlKey && e.keyCode == 13) {
+				if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10)) {
 					let form = $("#addForm");
+					if (!form[0].checkValidity()) {
+						form.find(":submit").click();
+					} else {
+						form.submit();
+					}
+				}
+			});
+			$("#uptateQuoteText").keydown(function (e) {
+				if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10)) {
+					let form = $("#updateForm");
 					if (!form[0].checkValidity()) {
 						form.find(":submit").click();
 					} else {
@@ -147,6 +185,14 @@
 				let id = button.data("id");
 				let modal = $(this);
 				modal.find("input[name=deleteQuoteId]").val(id);
+			})
+			$("#updateQuoteModal").on("show.bs.modal", function (event) {
+				let button = $(event.relatedTarget);
+				let id = button.data("id");
+				let modal = $(this);
+				modal.find("input[name=updateQuoteId]").val(id);
+				let quoteText = $("#quoteText" + id).text();
+				modal.find("textarea[name=quoteText]").val(quoteText);
 			})
 		});
 	</script>
