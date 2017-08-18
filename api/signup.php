@@ -13,8 +13,19 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST" || $bodyJson === null) {
 
 $email = mysql_escape_string((isset($bodyJson["email"])) ? trim($bodyJson["email"]) : "");
 $password = mysql_escape_string((isset($bodyJson["password"])) ? trim($bodyJson["password"]) : "");
+$name = mysql_escape_string((isset($bodyJson["name"])) ? trim($bodyJson["name"]) : "");
 
-$user = UserManager::login(["email" => $email, "password" => $password]);
+$existingUser = UserManager::getByEmail($email);
+if ($existingUser !== null) {
+    error(ERROR_CONFLICT);
+}
+
+$signupData = [
+	"email" => $email,
+	"password" => $password,
+	"name" => $name
+];
+$user = UserManager::register($signupData);
 
 if ($user === null) {
     error(ERROR_NOT_FOUND);
