@@ -57,9 +57,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 } else if ($_SERVER["REQUEST_METHOD"] === "DELETE") {
     $bookId = mysql_escape_string((isset($_REQUEST["id"])) ? trim($_REQUEST["id"]) : "");
 
-    BookManager::deleteForUser($bookId, $user["id"]);
+    $deleted = BookManager::deleteForUser($bookId, $user["id"]);
     response([
-        "success" => true
+        "deleted" => $deleted
     ]);
 } else {
     error(ERROR_BAD_REQUEST);

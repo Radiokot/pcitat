@@ -4,6 +4,7 @@ define("ERROR_BAD_REQUEST",     400);
 define("ERROR_NOT_AUTHORIZED",  401);
 define("ERROR_NOT_FOUND",       404);
 define("ERROR_CONFLICT",        409);
+define("ERROR_SERVER",          500);
 
 define("PC_USER", "pc_user");
 
