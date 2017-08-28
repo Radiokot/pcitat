@@ -8,6 +8,8 @@ define("ERROR_SERVER",          500);
 
 define("PC_USER", "pc_user");
 
+ini_set("session.use_cookies", 0);
+
 // CORS.
 header("Access-Control-Allow-Origin: *");
 if ($_SERVER["REQUEST_METHOD"] == "OPTIONS") {
