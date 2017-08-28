@@ -39,9 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
         error(ERROR_BAD_REQUEST);
     }
 
-    $text = mysql_escape_string(htmlspecialchars((isset($bodyJson["text"])) ? trim($bodyJson["text"]) : ""));
-	$text = str_replace("\\r\\n", "\n", $text);
-	$text = str_replace("\\n", "\n", $text);
+    $text = isset($bodyJson["text"]) ? trim($bodyJson["text"]) : "";
 
     if ($text === "") {
         error(ERROR_BAD_REQUEST);
@@ -65,9 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
         error(ERROR_BAD_REQUEST);
     }
 
-    $text = mysql_escape_string(htmlspecialchars((isset($bodyJson["text"])) ? trim($bodyJson["text"]) : ""));
-	$text = str_replace("\\r\\n", "\n", $text);
-	$text = str_replace("\\n", "\n", $text);
+    $text = isset($bodyJson["text"]) ? trim($bodyJson["text"]) : "";
 
     if ($text === "") {
         error(ERROR_BAD_REQUEST);
