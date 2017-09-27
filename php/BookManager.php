@@ -111,9 +111,13 @@ class BookManager {
 		$query->bindParam(":user_id", $userId);
 		$query->execute();
 
+		$deleted = $query->rowCount();
+
 		$db = null;
 
 		QuoteManager::deleteForUsersBook($bookId, $userId);
+
+		return $deleted;
 	}
 }
 

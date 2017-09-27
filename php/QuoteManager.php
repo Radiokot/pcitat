@@ -41,7 +41,11 @@ class QuoteManager {
 		$query->bindParam(":user_id", $userId);
 		$query->execute();
 
+		$deleted = $query->rowCount();
+
 		$db = null;
+
+		return $deleted;
 	} 
 
 	static function deleteForUsersBook($bookId, $userId) {
@@ -52,9 +56,12 @@ class QuoteManager {
 		$query->bindParam(":user_id", $userId);
 		$query->execute();
 
-		$db = null;
-	} 
+		$deleted = $query->rowCount();
 
+		$db = null;
+
+		return $deleted;
+	} 
 
 	static function getById($id) {
 		$db = DBManager::connect();
