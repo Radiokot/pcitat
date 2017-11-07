@@ -12,8 +12,8 @@ class BookManager {
 			return null;
 		}
 		$bookPart = $matches[1][0];
-
-		$content = file_get_contents("https://m.livelib.ru/".$bookPart);
+		
+		$content = file_get_contents("https://livelib.ru/".$bookPart);
 		$html = phpQuery::newDocumentHTML($content);
 
 		$book = array();
@@ -21,9 +21,9 @@ class BookManager {
 		if ($book["id"] === 0) {
 			return null;
 		}
-		$book["title"] = $html->find(".book-big-data:first>h1:first")[0]->text();
+		$book["title"] = trim($html->find("#book-title:first>span:first")[0]->text());
 		$book["author"] = $html->find(".author-name:first>a:first")->text();
-		$book["cover"] = $html->find(".book-image-center>img:first")->attr("src");
+		$book["cover"] = $html->find("#main-image-book:first")->attr("src");
 
 		return $book;
 	}
