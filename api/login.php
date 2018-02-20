@@ -11,8 +11,8 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST" || $bodyJson === null) {
     error(ERROR_BAD_REQUEST);
 }
 
-$email = mysql_escape_string((isset($bodyJson["email"])) ? trim($bodyJson["email"]) : "");
-$password = mysql_escape_string((isset($bodyJson["password"])) ? trim($bodyJson["password"]) : "");
+$email = ((isset($bodyJson["email"])) ? trim($bodyJson["email"]) : "");
+$password = ((isset($bodyJson["password"])) ? trim($bodyJson["password"]) : "");
 
 $user = UserManager::login(["email" => $email, "password" => $password]);
 

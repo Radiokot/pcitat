@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         error(ERROR_BAD_REQUEST);
     }
 
-    $url = mysql_escape_string((isset($bodyJson["url"])) ? trim($bodyJson["url"]) : "");
+    $url = ((isset($bodyJson["url"])) ? trim($bodyJson["url"]) : "");
     if ($url === "") {
         error(ERROR_BAD_REQUEST);
     }
@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         response($existBook);
     }
 } else if ($_SERVER["REQUEST_METHOD"] === "GET") {
-    $bookId = mysql_escape_string((isset($_REQUEST["id"])) ? trim($_REQUEST["id"]) : "");
+    $bookId = ((isset($_REQUEST["id"])) ? trim($_REQUEST["id"]) : "");
 
     if ($bookId === "") {
         $books = BookManager::getByUserId($user["id"]);
@@ -55,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         response($book);
     }
 } else if ($_SERVER["REQUEST_METHOD"] === "DELETE") {
-    $bookId = mysql_escape_string((isset($_REQUEST["id"])) ? trim($_REQUEST["id"]) : "");
+    $bookId = ((isset($_REQUEST["id"])) ? trim($_REQUEST["id"]) : "");
 
     $deleted = BookManager::deleteForUser($bookId, $user["id"]);
     response([

@@ -11,9 +11,9 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST" || $bodyJson === null) {
     error(ERROR_BAD_REQUEST);
 }
 
-$email = mysql_escape_string((isset($bodyJson["email"])) ? trim($bodyJson["email"]) : "");
-$password = mysql_escape_string((isset($bodyJson["password"])) ? trim($bodyJson["password"]) : "");
-$name = mysql_escape_string((isset($bodyJson["name"])) ? trim($bodyJson["name"]) : "");
+$email = ((isset($bodyJson["email"])) ? trim($bodyJson["email"]) : "");
+$password = ((isset($bodyJson["password"])) ? trim($bodyJson["password"]) : "");
+$name = ((isset($bodyJson["name"])) ? trim($bodyJson["name"]) : "");
 
 $existingUser = UserManager::getByEmail($email);
 if ($existingUser !== null) {

@@ -23,7 +23,7 @@ if ($bodyJson === null) {
     error(ERROR_BAD_REQUEST);
 }
 
-$bookId = mysql_escape_string(htmlspecialchars((isset($bodyJson["book"])) ? trim($bodyJson["book"]) : ""));
+$bookId = (htmlspecialchars((isset($bodyJson["book"])) ? trim($bodyJson["book"]) : ""));
 if ($bookId === "") {
     error(ERROR_BAD_REQUEST);
 }

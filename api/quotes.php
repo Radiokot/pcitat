@@ -16,7 +16,7 @@ if (!isset($_SESSION[PC_USER])) {
 $user = $_SESSION[PC_USER];
 
 if ($_SERVER["REQUEST_METHOD"] === "GET") {
-    $bookId = mysql_escape_string((isset($_REQUEST["book"])) ? trim($_REQUEST["book"]) : "");
+    $bookId = ((isset($_REQUEST["book"])) ? trim($_REQUEST["book"]) : "");
     
     $quotes;
     if ($bookId === "") {
@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
     
     responseArray($quotes);
 } else if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $bookId = mysql_escape_string((isset($_REQUEST["book"])) ? trim($_REQUEST["book"]) : "");
+    $bookId = ((isset($_REQUEST["book"])) ? trim($_REQUEST["book"]) : "");
     $book = BookManager::getById($bookId);
 
     if ($book === null) {
@@ -52,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
         response($quote);
     }
 } else if ($_SERVER["REQUEST_METHOD"] === "PATCH") {
-    $quoteId = mysql_escape_string((isset($_REQUEST["id"])) ? trim($_REQUEST["id"]) : "");
+    $quoteId = ((isset($_REQUEST["id"])) ? trim($_REQUEST["id"]) : "");
 
     if ($quoteId === "") {
         error(ERROR_BAD_REQUEST);
@@ -76,7 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
         response($updatedQuote);
     }
 } else if ($_SERVER["REQUEST_METHOD"] === "DELETE") {
-     $quoteId = mysql_escape_string((isset($_REQUEST["id"])) ? trim($_REQUEST["id"]) : "");
+     $quoteId = ((isset($_REQUEST["id"])) ? trim($_REQUEST["id"]) : "");
 
      $deleted = QuoteManager::deleteById($quoteId, $user["id"]);
 
