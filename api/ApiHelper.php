@@ -33,7 +33,7 @@ function response($data) {
     header("Content-Type: application/json");
     echo(json_encode([
         "response" => $data
-    ]));
+    ], JSON_UNESCAPED_UNICODE));
     exit();
 }
 
