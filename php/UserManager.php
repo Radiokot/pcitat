@@ -84,7 +84,9 @@ class UserManager {
 
 		$db = null;
 
-		return UserManager::getByEmail($registerData["email"]);
+		$user = UserManager::getByEmail($registerData["email"]);
+		$user["key"] = hash("sha256", $user["email"].$user["password"]);
+		return $user;
 	}
 
 	static function login($loginData) {
@@ -93,6 +95,7 @@ class UserManager {
 		if ($user == null || $user["password"] !== $passwordHash) {
 			return null;
 		}
+		$user["key"] = hash("sha256", $user["email"].$user["password"]);
 		return $user;
 	}
 }

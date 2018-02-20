@@ -6,9 +6,10 @@ define("ERROR_NOT_FOUND",       404);
 define("ERROR_CONFLICT",        409);
 define("ERROR_SERVER",          500);
 
-define("PC_USER", "pc_user");
+define("EMAIL_HEADER", "HTTP_X_AUTH_EMAIL");
+define("KEY_HEADER", "HTTP_X_AUTH_KEY");
 
-ini_set("session.use_cookies", 0);
+include_once "../php/UserManager.php";
 
 // CORS.
 header("Access-Control-Allow-Origin: *");
@@ -48,6 +49,26 @@ function error($code) {
     http_response_code($code);
     header("Content-Type: application/json");
     exit();
+}
+
+function getUserOrError() {
+    $user = null;
+    if (isset($_SERVER[EMAIL_HEADER]) && isset($_SERVER[KEY_HEADER])) {
+        $email = $_SERVER[EMAIL_HEADER];
+        $key =  $_SERVER[KEY_HEADER];
+
+        $user = UserManager::getByEmail($email);
+        if ($key != hash("sha256", $user["email"].$user["password"])) {
+            $user = null;
+        }
+    }
+
+    if ($user != null) {
+        return $user;
+    } else {
+        error(ERROR_NOT_AUTHORIZED);
+        return null;
+    }
 }
 
 ?>
