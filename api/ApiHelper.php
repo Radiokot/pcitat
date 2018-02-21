@@ -64,7 +64,8 @@ function getUserOrError() {
 
     if ($email != null && $key != null) {
         $user = UserManager::getByEmail($email);
-        if ($key != hash("sha256", $user["email"].$user["password"])) {
+        $user["key"] = hash("sha256", $user["email"].$user["password"]);
+	if ($key != $user["key"]) {
             $user = null;
         }
     }

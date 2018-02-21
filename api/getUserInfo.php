@@ -12,6 +12,7 @@ $user = getUserOrError();
 response([
     "id" => $user["id"],
     "email" => $user["email"],
+    "key" => $user["key"],
     "name" => $user["name"],
     "twitter" => [
         "username" => $user["twitter_name"],
