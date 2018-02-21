@@ -51,12 +51,18 @@ function error($code) {
     exit();
 }
 
+function getValueFromCookieOrHeader($name) {
+    return isset($_SERVER[$name]) 
+        ? $_SERVER[$name]
+        : (isset($_COOKIE[$name]) ? $_COOKIE[$name] : null);
+}
+
 function getUserOrError() {
     $user = null;
-    if (isset($_SERVER[EMAIL_HEADER]) && isset($_SERVER[KEY_HEADER])) {
-        $email = $_SERVER[EMAIL_HEADER];
-        $key =  $_SERVER[KEY_HEADER];
+    $email = getValueFromCookieOrHeader(EMAIL_HEADER);
+    $key = getValueFromCookieOrHeader(KEY_HEADER);
 
+    if ($email != null && $key != null) {
         $user = UserManager::getByEmail($email);
         if ($key != hash("sha256", $user["email"].$user["password"])) {
             $user = null;

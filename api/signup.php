@@ -29,6 +29,9 @@ if ($user === null) {
     error(ERROR_NOT_FOUND);
 }
 
+setcookie(EMAIL_HEADER, $user["email"], 2147483647);
+setcookie(KEY_HEADER, $user["key"], 2147483647);
+
 response([
     "id" => $user["id"],
     "email" => $user["email"],
