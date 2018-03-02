@@ -38,12 +38,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($bookId === "") {
         $books = BookManager::getByUserId($user["id"]);
+        for ($i = 0; $i < count($books); $i++) {
+			$books[$i]["twitterBook"] = $user["twitter_book_id"] == $books[$i]["id"];
+		}
         responseArray($books);
     } else {
         $book = BookManager::getById($bookId);
         if ($book == null) {
             error(ERROR_NOT_FOUND);
         }
+
+        $book["twitterBook"] = $user["twitter_book_id"] == $book["id"];
+        
         response($book);
     }
 } else if ($_SERVER["REQUEST_METHOD"] === "DELETE") {
