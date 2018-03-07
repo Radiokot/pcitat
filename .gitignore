@@ -1,2 +1,4 @@
 php/.quoter.sqlite
 php/.credentials.php
+api/.config.php
+
