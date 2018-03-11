@@ -71,7 +71,7 @@ class BookManager {
 	static function getByUserId($userId) {
 		$db = DBManager::connect();
 
-		$query = $db->prepare("SELECT books.id, books.title, books.author, books.cover, "
+		$query = $db->prepare("SELECT books.id, `users-books`.id as pagingToken, books.title, books.author, books.cover, "
 			."(SELECT COUNT(*) FROM quotes WHERE quotes.user_id = 'users-books'.user_id AND quotes.book_id = books.id) AS quotesCount "
 			."FROM 'users-books', books WHERE 'users-books'.user_id = :user_id AND 'users-books'.book_id = books.id "
 			."ORDER BY 'users-books'.id DESC");
@@ -92,7 +92,7 @@ class BookManager {
 		$usersBooks = BookManager::getByUserId($userId);
 		foreach ($usersBooks as $book) {
 			if ($book["id"] == $bookId) {
-				return false;
+				return null;
 			}
 		}
 
@@ -103,9 +103,11 @@ class BookManager {
 		$query->bindParam(":user_id", $userId);
 		$query->execute();
 
+		$id = intval($db->lastInsertId());
+
 		$db = null;
 
-		return true;
+		return $id;
 	}
 
 	static function deleteForUser($bookId, $userId) {

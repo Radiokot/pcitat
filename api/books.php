@@ -31,6 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (!$result) {
         error(ERROR_CONFLICT);
     } else {
+        $existBook['pagingToken'] = $result;
         response($existBook);
     }
 } else if ($_SERVER["REQUEST_METHOD"] === "GET") {
