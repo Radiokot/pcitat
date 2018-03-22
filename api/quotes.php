@@ -38,9 +38,14 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
     }
 
     $quote = QuoteManager::add($user["id"], $book["id"], $text);
+
     if (!$quote) {
         error(ERROR_SERVER);
     } else {
+        unset($quote["book_id"]);
+        $quote["bookId"] = $book["id"];
+        $quote["bookTitle"] = $book["title"];
+
         response($quote);
     }
 } else if ($_SERVER["REQUEST_METHOD"] === "PATCH") {
