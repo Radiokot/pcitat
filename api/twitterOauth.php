@@ -3,16 +3,16 @@
 include_once "../php/UserManager.php";
 include_once "../php/.credentials.php";
 include_once "./.config.php";
+include_once dirname(__FILE__)."/ApiHelper.php";
 
 include_once "../php/lib/twitteroauth/autoload.php";
 use Abraham\TwitterOAuth\TwitterOAuth;
 
 error_reporting(E_ALL & ~E_DEPRECATED);
 
-$email = isset($_REQUEST['email']) ? $_REQUEST['email'] : null;
-$request_key = isset($_REQUEST['request_key']) ? $_REQUEST['request_key'] : null;
-
+$action = isset($_REQUEST['action']) ? $_REQUEST['action'] : null;
 $protocol = (isset($_SERVER['HTTPS']) || FORCE_HTTPS) ? "https:" : "http:";
+$redirect_url = $protocol."//".$_SERVER['HTTP_HOST'];
 
 if (!isset($_REQUEST['oauth_token']) && !isset($_REQUEST['oauth_verifier']) && !isset($_REQUEST['denied'])) {
 	// Need auth.
@@ -21,28 +21,65 @@ if (!isset($_REQUEST['oauth_token']) && !isset($_REQUEST['oauth_verifier']) && !
 	$connection = new TwitterOAuth(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET);
 	$request_token = $connection->oauth('oauth/request_token', array('oauth_callback' => $self_url));
 
-	$url = $connection->url('oauth/authorize', array('oauth_token' => $request_token['oauth_token']));
-
-	header("Location: ".$url);
+	$redirect_url = $connection->url('oauth/authorize', array('oauth_token' => $request_token['oauth_token']));
 } else {
-	// Process auth result.
-	if (!isset($_REQUEST['denied']) && $email != null && $request_key != null) {
-		$user = UserManager::getByEmail($email);
-		$key = hash("sha256", $user["email"].$user["password"]);
+	if (!isset($_REQUEST['denied'])) {
 		$oauth_token = $_REQUEST['oauth_token'];
 		$oauth_verifier = $_REQUEST['oauth_verifier'];
+		$connection = new TwitterOAuth(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, 
+			$oauth_token, $oauth_verifier);
+		$access_token = $connection->oauth("oauth/access_token", ["oauth_verifier" => $oauth_verifier]);
+		$twitterNickname = $access_token['screen_name'];
 
-		if ($request_key == hash("sha256", $key)) {
+		// Update or set Twitter profile from profile settings.
+		if ($action == "update_existing" || $action == null) {
+			$email = isset($_REQUEST['email']) ? $_REQUEST['email'] : null;
+			$request_key = isset($_REQUEST['request_key']) ? $_REQUEST['request_key'] : null;
+
+			if ($email != null && $request_key != null) {
+				$user = UserManager::getByEmail($email);
+				$key = hash("sha256", $user["email"].$user["password"]);
+
+				if ($request_key == hash("sha256", $key)) {
+					UserManager::setTwitterName($user["id"], $twitterNickname);
+				}
+			}
+
+			$redirect_url = $protocol.TWITTER_REDIRECT_URL;
+		} 
+		// Log in with Twitter
+		else if ($action == "login") {
 			$connection = new TwitterOAuth(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, 
-				$oauth_token, $oauth_verifier);
-			$access_token = $connection->oauth("oauth/access_token", ["oauth_verifier" => $oauth_verifier]);
+				$access_token['oauth_token'], $access_token['oauth_token_secret']);
 
-			UserManager::setTwitterName($user["id"], $access_token['screen_name']);
+			$twitterCredentials = $connection->get('account/verify_credentials', ['include_email' => 'true']);
+			$twitterEmail = $twitterCredentials->email;
+			$twitterName = $twitterCredentials->name;
+
+			$email = $twitterEmail != null ? $twitterEmail : $twitterNickname."@twitter.com";
+			
+			$user = UserManager::getByEmail($email);
+
+			if ($user == null) {
+				$signupData = [
+					"email" => $email,
+					"password" => base64_encode(openssl_random_pseudo_bytes(32)),
+					"name" => $twitterName
+				];
+				$user = UserManager::register($signupData);
+				UserManager::setTwitterName($user["id"], $twitterNickname);
+			} else {
+				$user["key"] = hash("sha256", $user["email"].$user["password"]);
+			}
+
+			if ($user != null) {
+				$key = $user["key"];
+				setcookie("credentials", '{"email":"'.$email.'","key":"'.$key.'"}', 2147483647, "/");
+			}
 		}
 	}
-
-	$redirect_url = $protocol.TWITTER_REDIRECT_URL;
-	header("Location: ".$redirect_url);
 }
+
+header("Location: ".$redirect_url);
 
 ?>
