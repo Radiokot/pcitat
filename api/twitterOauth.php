@@ -11,8 +11,11 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 error_reporting(E_ALL & ~E_DEPRECATED);
 
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : null;
+$preferred_redirect_url = isset($_REQUEST['redirect']) ? $_REQUEST['redirect'] : null;
 $protocol = (isset($_SERVER['HTTPS']) || FORCE_HTTPS) ? "https:" : "http:";
 $redirect_url = $protocol."//".$_SERVER['HTTP_HOST'];
+
+$success = false;
 
 if (!isset($_REQUEST['oauth_token']) && !isset($_REQUEST['oauth_verifier']) && !isset($_REQUEST['denied'])) {
 	// Need auth.
@@ -42,10 +45,15 @@ if (!isset($_REQUEST['oauth_token']) && !isset($_REQUEST['oauth_verifier']) && !
 
 				if ($request_key == hash("sha256", $key)) {
 					UserManager::setTwitterName($user["id"], $twitterNickname);
+					$success = true;
 				}
 			}
 
 			$redirect_url = $protocol.TWITTER_REDIRECT_URL;
+			if ($preferred_redirect_url != null) {
+				$redirect_url = $preferred_redirect_url
+					."?success=".var_export($success, true);
+			}
 		} 
 		// Log in with Twitter
 		else if ($action == "login") {
@@ -72,10 +80,25 @@ if (!isset($_REQUEST['oauth_token']) && !isset($_REQUEST['oauth_verifier']) && !
 				$user["key"] = hash("sha256", $user["email"].$user["password"]);
 			}
 
+			$key = null;
 			if ($user != null) {
 				$key = $user["key"];
 				setcookie("credentials", '{"email":"'.$email.'","key":"'.$key.'"}', 2147483647, "/");
+				$success = true;
 			}
+
+			if ($preferred_redirect_url != null) {
+				$redirect_url = $preferred_redirect_url
+					."?success=".var_export($success, true);
+				if ($success) {
+					$redirect_url = $redirect_url."&email=".$email."&key=".$key;
+				}
+			}
+		}
+	} else {
+		if ($preferred_redirect_url != null) {
+			$redirect_url = $preferred_redirect_url
+				."?success=".var_export($success, true);
 		}
 	}
 }
