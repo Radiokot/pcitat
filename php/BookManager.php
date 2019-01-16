@@ -21,13 +21,18 @@ class BookManager {
 		if ($book["id"] === 0) {
 			return null;
 		}
-		
-		$title = trim($html->find("[itemprop='name']:first")->text());
-		if ($title == "") {
-			$title = trim($html->find("#book-title")->text());
+		$book["title"] = trim($html->find("#book-title:first>span:first")[0]->text());
+		$book["author"] = $html->find(".author-name:first>a:first")->text();
+
+		if ($book["author"] == "") {
+			$authors = $html->find(".author-item");
+			foreach ($authors as $author) {
+				$book["author"] = $book["author"].$author->nodeValue.", ";
+			}
+			if (strlen($book["author"]) > 2) {
+				$book["author"] = substr($book["author"], 0, -2);
+			}
 		}
-		$book["title"] = $title;
-		$book["author"] = $html->find("[itemprop='author']:first")->text();
 		$book["cover"] = $html->find("#main-image-book:first")->attr("src");
 
 		return $book;
