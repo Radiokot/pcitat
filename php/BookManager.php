@@ -21,23 +21,24 @@ class BookManager {
 		if ($book["id"] === 0) {
 			return null;
 		}
-		$book["title"] = trim($html->find("#book-title:first>span:first")[0]->text());
-		$book["author"] = $html->find(".author-name:first>a:first")->text();
 
-		if ($book["author"] == "") {
-			$authors = $html->find(".author-item");
-			foreach ($authors as $author) {
-				$book["author"] = $book["author"].$author->nodeValue.", ";
-			}
-			if (strlen($book["author"]) > 2) {
-				$book["author"] = substr($book["author"], 0, -2);
-			}
+		$book["title"] = trim($html->find(".bc__book-title")[0]->text());
+
+		$authors = $html->find(".bc-author>.bc-author__link");
+		$authorsString = "";
+		foreach ($authors as $author) {
+			$authorsString = $authorsString.$author->nodeValue.", ";
 		}
+		if (strlen($authorsString) > 2) {
+			$authorsString = substr($authorsString, 0, -2);
+		}
+		$book["author"] = $authorsString;
+		
 		$book["cover"] = $html->find("#main-image-book:first")->attr("src");
 
 		return $book;
 	}
-
+	
 	static function add($book) {
 		$db = DBManager::connect();
 
