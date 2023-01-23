@@ -94,6 +94,27 @@ class BookManager {
 		return $result;
 	}
 
+	static function getPublicByUserId($userId) {
+		$db = DBManager::connect();
+
+		$query = $db->prepare("SELECT books.id, `users-books`.id as pagingToken, books.title, books.author, books.cover, "
+			."(SELECT COUNT(*) FROM quotes WHERE quotes.user_id = 'users-books'.user_id AND quotes.book_id = books.id AND quotes.is_public = 1) AS quotesCount "
+			."FROM 'users-books', books "
+			."WHERE 'users-books'.user_id = :user_id AND 'users-books'.book_id = books.id AND quotesCount > 0 "
+			."ORDER BY 'users-books'.id DESC");
+		$query->bindParam(":user_id", $userId);
+		$query->execute();
+
+		$db = null;
+
+		$result = DBManager::fetch($query);
+		for ($i = 0; $i < count($result); $i++) {
+			$result[$i]["id"] = intval($result[$i]["id"]);
+		}
+
+		return $result;
+	}
+
 	static function addForUser($bookId, $userId) {
 		$usersBooks = BookManager::getByUserId($userId);
 		foreach ($usersBooks as $book) {
