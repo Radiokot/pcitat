@@ -1,4 +1,4 @@
-# [Просто цитатник](https://pc.radiokot.com.ua)#
+# <img src="https://github.com/Radiokot/pcitat-vue/raw/master/static/icon/apple-touch-icon.png" alt="Icon" style="vertical-align: bottom; height: 1.2em;"/> [Просто цитатник](https://pc.radiokot.com.ua)
 
 Хранилище для цитат из книг на PHP + SQLite.
 
