@@ -12,9 +12,9 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
     
     $quotes;
     if ($bookId === "") {
-        $quotes = QuoteManager::getByUserId($user["id"]);
+        $quotes = QuoteManager::getByUserId($user["id"], false);
     } else {
-        $quotes = QuoteManager::getByUserId($user["id"], $bookId);
+        $quotes = QuoteManager::getByUserId($user["id"], false, $bookId);
     }
     
     responseArray($quotes);

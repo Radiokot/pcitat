@@ -86,12 +86,13 @@ class QuoteManager {
 		return $result[0];
 	} 
 
-	static function getByUserId($userId, $bookId=null) {
+	static function getByUserId($userId, $publicOnly, $bookId=null) {
 		$db = DBManager::connect();
 
 		$query = $db->prepare("SELECT quotes.id, quotes.user_id, quotes.is_public, quotes.text, quotes.book_id as bookId, books.title AS bookTitle "
 			."FROM quotes, books WHERE user_id = :user_id "
 			."AND quotes.book_id = books.id "
+			.(($publicOnly === true ? "AND quotes.is_public = 1 " : " "))
 			.(($bookId !== null) ? "AND book_id = :book_id " : " ")
 			."ORDER BY quotes.id DESC");
 		$query->bindParam(":user_id", $userId);
