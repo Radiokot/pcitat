@@ -3,12 +3,13 @@
 include_once dirname(__FILE__)."/DBManager.php";
 
 class QuoteManager {
-	static function add($userId, $bookId, $text) {
+	static function add($userId, $bookId, $isPublic, $text) {
 		$db = DBManager::connect();
 
-		$query = $db->prepare("INSERT INTO quotes (user_id, book_id, text) VALUES(:user_id, :book_id, :text)");
+		$query = $db->prepare("INSERT INTO quotes (user_id, book_id, is_public, text) VALUES(:user_id, :book_id, :is_public, :text)");
 		$query->bindParam(":user_id", $userId);
 		$query->bindParam(":book_id", $bookId);
+		$query->bindValue(":is_public", $isPublic ? 1 : 0);
 		$query->bindParam(":text", $text);
 		$query->execute();
 
@@ -19,12 +20,13 @@ class QuoteManager {
 		return QuoteManager::getById($id);
 	}
 
-	static function update($id, $userId, $text) {
+	static function update($id, $userId, $isPublic, $text) {
 		$db = DBManager::connect();
 
-		$query = $db->prepare("UPDATE quotes SET text = :text WHERE id = :id AND user_id = :user_id");
+		$query = $db->prepare("UPDATE quotes SET text = :text, is_public = :is_public WHERE id = :id AND user_id = :user_id");
 		$query->bindParam(":id", $id);
 		$query->bindParam(":user_id", $userId);
+		$query->bindValue(":is_public", ($isPublic) ? 1 : 0);
 		$query->bindParam(":text", $text);
 		$query->execute();
 
@@ -75,6 +77,7 @@ class QuoteManager {
 		$result = DBManager::fetch($query);
 		for ($i = 0; $i < count($result); $i++) {
 			$result[$i]["id"] = intval($result[$i]["id"]);
+			$result[$i]["is_public"] = boolval($result[$i]["is_public"]);
 		}
 
 		if (count($result) == 0) {
@@ -86,7 +89,7 @@ class QuoteManager {
 	static function getByUserId($userId, $bookId=null) {
 		$db = DBManager::connect();
 
-		$query = $db->prepare("SELECT quotes.id, quotes.user_id, quotes.text, quotes.book_id as bookId, books.title AS bookTitle "
+		$query = $db->prepare("SELECT quotes.id, quotes.user_id, quotes.is_public, quotes.text, quotes.book_id as bookId, books.title AS bookTitle "
 			."FROM quotes, books WHERE user_id = :user_id "
 			."AND quotes.book_id = books.id "
 			.(($bookId !== null) ? "AND book_id = :book_id " : " ")
@@ -102,6 +105,7 @@ class QuoteManager {
 		$result = DBManager::fetch($query);
 		for ($i = 0; $i < count($result); $i++) {
 			$result[$i]["id"] = intval($result[$i]["id"]);
+			$result[$i]["is_public"] = boolval($result[$i]["is_public"]);
 		}
 
 		return $result;

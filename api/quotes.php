@@ -37,7 +37,9 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
         error(ERROR_BAD_REQUEST);
     }
 
-    $quote = QuoteManager::add($user["id"], $book["id"], $text);
+    $isPublic = (isset($bodyJson["is_public"]) && is_bool($bodyJson["is_public"])) ? $bodyJson["is_public"] : false;
+    
+    $quote = QuoteManager::add($user["id"], $book["id"], $isPublic, $text);
 
     if (!$quote) {
         error(ERROR_SERVER);
@@ -65,8 +67,10 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
     if ($text === "") {
         error(ERROR_BAD_REQUEST);
     }
+
+    $isPublic = (isset($bodyJson["is_public"]) && is_bool($bodyJson["is_public"])) ? $bodyJson["is_public"] : false;
     
-    $updatedQuote = QuoteManager::update($quoteId, $user["id"], $text);
+    $updatedQuote = QuoteManager::update($quoteId, $user["id"], $isPublic, $text);
     if (!$updatedQuote) {
         error(ERROR_NOT_FOUND);
     } else {
