@@ -2,6 +2,10 @@
 
 Хранилище для цитат из книг на PHP + SQLite.
 
+### Клиенты
+- [Веб-клиент](https://github.com/Radiokot/pcitat-vue)
+- [Приложение для Android](https://github.com/Radiokot/pcitat-android)
+
 ### Как запустить у себя? ###
 
 
