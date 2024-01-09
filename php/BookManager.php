@@ -13,11 +13,16 @@ class BookManager {
 		}
 		$bookPart = $matches[1][0];
 		
-		$content = file_get_contents("https://livelib.ru/".$bookPart);
+		$content = file_get_contents("https://www.livelib.ru/".$bookPart);
 		$html = phpQuery::newDocumentHTML($content);
 
 		$book = array();
-		$book["id"] = intval($html->find("#sources-edition-id")->val());
+
+		$book["id"] = 
+			intval($html->find(".bc__wrapper")->attr("data-dmp-book-id"))
+				?: intval($html->find("#sources-edition-id")->val())
+				?: 0;
+				
 		if ($book["id"] === 0) {
 			return null;
 		}
