@@ -68,9 +68,15 @@ class BookManager {
 
 		$db = null;
 
+		$imageProxyUrl = getenv("IMAGE_PROXY_URL");
+		if ($imageProxyUrl === false) {
+			$imageProxyUrl = "";
+		}
+
 		$result = DBManager::fetch($query);
 		for ($i = 0; $i < count($result); $i++) {
 			$result[$i]["id"] = intval($result[$i]["id"]);
+			$result[$i]["cover"] = $imageProxyUrl.$result[$i]["cover"];
 		}
 
 		if (count($result) == 0) {
@@ -91,9 +97,15 @@ class BookManager {
 
 		$db = null;
 
+		$imageProxyUrl = getenv("IMAGE_PROXY_URL");
+		if ($imageProxyUrl === false) {
+			$imageProxyUrl = "";
+		}
+
 		$result = DBManager::fetch($query);
 		for ($i = 0; $i < count($result); $i++) {
 			$result[$i]["id"] = intval($result[$i]["id"]);
+			$result[$i]["cover"] = $imageProxyUrl.$result[$i]["cover"];
 		}
 
 		return $result;
@@ -112,9 +124,15 @@ class BookManager {
 
 		$db = null;
 
+		$imageProxyUrl = getenv("IMAGE_PROXY_URL");
+		if ($imageProxyUrl === false) {
+			$imageProxyUrl = "";
+		}
+		
 		$result = DBManager::fetch($query);
 		for ($i = 0; $i < count($result); $i++) {
 			$result[$i]["id"] = intval($result[$i]["id"]);
+			$result[$i]["cover"] = $imageProxyUrl.$result[$i]["cover"];
 		}
 
 		return $result;
